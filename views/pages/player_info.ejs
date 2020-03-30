@@ -1,0 +1,77 @@
+<% include ../partials/header %>
+<% include ../partials/menu %>
+	<div class="container">
+		<br>
+		<div class="row">
+			<div class="col-4">
+				<div class="card">
+				<!-- TODO: Modify the ejs code below, to conditionally set the image_src to be from our chosen player -->
+				<%
+			var image_src
+				if (playerinfo){
+					image_src = playerinfo.img_src;
+				}else{
+					image_src = "../resources/img/helmet.jpg";
+				}
+			%>
+				 <img class="card-img-top" id="player_img" src= "<%- image_src %>" alt="Image of Football Player">
+				  <div class="card-body mx-auto">
+					<form class="form"action="/player_info/post" method="get">
+						<select class="custom-select" name="player_choice" onchange="this.form.submit()">
+							 <option selected>Select Player</option>
+							 <!-- TODO: Populate our select with player options
+							 			For each player, set a new option with a value matching the palyer's id,
+							 			but will display the player's name-->
+										<%
+							if (players) {
+								var options = '';
+								players.forEach(function(item){
+								options += "<option value=" + item.id + ">" + item.name + "</option>"
+							}); %>
+							<%- options %>
+							<% } %>
+						</select>
+					</form>
+				  </div>
+				</div>
+			</div>
+			<div class="col-8">
+				<div class="table-responsive">
+					<table class="table">
+						<tr>
+							<th>Year</th>
+							<td><% if(playerinfo){var year = playerinfo.year;} %><%- year %></td>
+						</tr>
+						<tr>
+							<th>Major</th>
+							<td><% if(playerinfo){var major = playerinfo.major;} %><%- major %></td>
+						</tr>
+						<tr>
+							<th>Games Played</th>
+							<td><% if(games){
+								var gamesPlayed = 0;
+								games.forEach(function(item){
+									gamesPlayed += 1;
+								})}%><%- gamesPlayed %>
+								<!-- Tried using count(*) in server.js instead of this but it was returning objects and not integer value -->
+							</td>
+						</tr>
+						<tr>
+							<td>Passing Yards: <% if(playerinfo){var pYards = playerinfo.passing_yards; var apy = Math.floor(pYards / gamesPlayed);} %><%- pYards %></td>
+							<td>Avg. Passing Yards:<%- apy %></td>
+						</tr>
+						<tr>
+							<td>Rushing Yards: <% if(playerinfo){var rYards = playerinfo.rushing_yards; var ary = Math.floor(rYards / gamesPlayed)} %><%- rYards %></td>
+							<td>Avg. Rushing Yards: <%- ary %></td>
+						</tr>
+						<tr>
+							<td>Receiving Yards: <% if(playerinfo){var recYards = playerinfo.receiving_yards; var arecy = recYards / gamesPlayed} %><%- recYards; %></td>
+							<td>Avg. Receiving Yards: <%- arecy %></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<% include ../partials/footer %>
